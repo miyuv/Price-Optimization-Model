@@ -1,0 +1,38 @@
+import numpy as np
+from scipy.optimize import minimize
+
+# I assume you have uploaded your dataset and made it available for analysis.
+# Define the Profit Function
+def calculate_profit(price, costs, demand):
+    return (price - costs) * demand
+
+# Define the Cost Function
+def calculate_cost(costs, quantity):
+    return costs * quantity
+
+# Define the Objective Function
+def objective_function(price, costs, demand, quantity):
+    revenue = price * demand
+    total_cost = calculate_cost(costs, quantity)
+    profit = calculate_profit(revenue, total_cost, demand)
+    return -profit  # Minimize negative profit to maximize actual profit
+
+# Provide Data
+costs = 10  # Cost per unit
+demand = np.array([50, 40, 30, 20, 10])  # Demand for each quantity
+quantity = np.array([100, 200, 300, 400, 500])  # Quantity for each price
+
+# Define Constraints
+price_bounds = [(10, 100)]  # Bounds for price variable
+
+# Optimize the Price
+initial_price = 50  # Initial guess for price
+result = minimize(objective_function, initial_price, args=(costs, demand, quantity),
+                  bounds=price_bounds, method='SLSQP')
+
+# Display the Optimized Price and Profit
+optimal_price = result.x[0]
+max_profit = -result.fun
+
+print("Optimized Price:", optimal_price)
+print("Maximized Profit:", max_profit)
